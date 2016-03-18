@@ -1,0 +1,19 @@
+{
+  "name": "tinderbot",
+  "version": "1.0.0",
+  "description": "A bot for interfacing with tinder",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tinder",
+    "bot",
+    "automation"
+  ],
+  "author": "Alexander Miranda",
+  "license": "MIT",
+  "dependencies": {
+    "underscore": "^1.8.3"
+  }
+}
