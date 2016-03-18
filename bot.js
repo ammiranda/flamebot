@@ -21,7 +21,7 @@ auth.default().then(function(res){
                   client.like(id, function(err, data) {
                      console.log(data);
                      if (!_.isNull(data) && data.match) {
-                        client.sendMessage(id, "How much ya bench?", function(){
+                        client.sendMessage(id, "Do you like avocados?", function(){
                            console.log('msg sent');
                         });
                      }
