@@ -3,6 +3,7 @@ var auth = require('tinderauth');
 var client = new tinder.TinderClient();
 var _ = require('underscore');
 var fs = require('fs');
+var messageGenerator = require('./randmessageGenerator');
 
 auth.default().then(function(res){
    var token = res.token;
@@ -19,8 +20,9 @@ auth.default().then(function(res){
                 var match = matches[i];
                 var id = match['_id'];
                 if (match.messages.length === 0) {
-                   client.sendMessage(id, "Do you like avocados?", function() {
-                      console.log('initial message sent');
+                   var msg = messageGenerator.getResponse();
+                   client.sendMessage(id, msg, function() {
+                      console.log('initial message sent', msg);
                    });
                 } else {
                    console.log('already sent initial message');
@@ -35,10 +37,8 @@ auth.default().then(function(res){
                .pluck('_id')
                .each(function(id) {
                   client.like(id, function(err, data) {
-                     if (!_.isNull(data) && data.match) {
-                        client.sendMessage(id, "Do you like avocados?", function(){
-                           console.log('matched and msg sent');
-                        });
+                     if (!err) {
+                        console.log('user liked');
                      }
                   });
                 });
