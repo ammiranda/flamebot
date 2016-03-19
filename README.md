@@ -11,7 +11,7 @@ I want to thank the people responsible for [tinderjs](https://github.com/alkawry
 
 ###Caveats
 
-Tinder needs your Facebook credentials which this code obtains in a programmatic way. Know that this might violate both Tinder's and Facebook's terms of service. In fact the node module I use to achieve this [tinderauth](https://github.com/tinderjs/tinderauth) warns it's users about this possiblity.
+Tinder needs your Facebook credentials which this code obtains in a programmatic way. Know that this might violate both Tinder's and Facebook's terms of service. In fact the node module I use to achieve this ([tinderauth](https://github.com/tinderjs/tinderauth)) warns it's users about this possiblity.
 
 ###System Dependencies
 
