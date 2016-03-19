@@ -4,6 +4,30 @@ var client = new tinder.TinderClient();
 var _ = require('underscore');
 var fs = require('fs');
 var messageGenerator = require('./randmessageGenerator');
+var args = process.argv.slice(2);
+
+var exit = function() {
+   process.exit();
+};
+
+var messageService = function(cb) {
+   client.getHistory(function(err, data){
+      var matches = data.matches;
+      for (var i = matches.length - 1; i > 0; --i) {
+         var match = matches[i];
+         var id = match['_id'];
+         if (match.messages.length === 0) {
+            var msg = messageGenerator.getResponse();
+            client.sendMessage(id, msg, function() {
+               console.log('initial message sent', msg);
+            });
+         }
+       }
+       if (cb) {
+          cb();
+       }
+    });
+};
 
 auth.default().then(function(res){
    var token = res.token;
@@ -13,26 +37,13 @@ auth.default().then(function(res){
       var defaults = client.getDefaults();
       var recs_size = defaults.globals.recs_size;      
       
-      setInterval(function() {
-         client.getHistory(function(err, data){
-            var matches = data.matches;
-            for (var i = matches.length - 1; i > 0; --i) {
-                var match = matches[i];
-                var id = match['_id'];
-                if (match.messages.length === 0) {
-                   var msg = messageGenerator.getResponse();
-                   client.sendMessage(id, msg, function() {
-                      console.log('initial message sent', msg);
-                   });
-                } else {
-                   console.log('already sent initial message');
-                }
-             }
-         });
-      }, 120000);      
+      if (!args[0]){
+
+      setInterval(messageService, 120000);      
       
       setInterval(function() {
          client.getRecommendations(recs_size, function(err, data) {
+            console.log(data);
             _.chain(data.results)
                .pluck('_id')
                .each(function(id) {
@@ -44,5 +55,9 @@ auth.default().then(function(res){
                 });
             });
       }, 5000);
+
+      } else if (args[0] === 'msg') {
+         messageService(exit);
+      }
    });
 });
