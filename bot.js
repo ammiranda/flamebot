@@ -2,7 +2,6 @@ var tinder = require('tinderjs');
 var auth = require('tinderauth');
 var client = new tinder.TinderClient();
 var _ = require('underscore');
-var fs = require('fs');
 var messageGenerator = require('./randmessageGenerator');
 var args = process.argv.slice(2);
 
