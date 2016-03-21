@@ -24,7 +24,9 @@ var messageService = function(cb) {
          }
        }
        if (cb) {
-          cb();
+         setTimeout(function(){
+             cb();
+           }, 10000);
        }
     });
 };
@@ -69,6 +71,9 @@ auth.default().then(function(res){
          }());
       } else if (args[0] === 'msg') {
          messageService(exit);
+      } else {
+         console.log('Unrecognized option - exiting');
+         exit();
       }
    });
 });
