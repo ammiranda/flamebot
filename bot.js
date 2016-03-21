@@ -13,10 +13,12 @@ var exit = function() {
 var messageService = function(cb) {
    client.getHistory(function(err, data){
       var matches = data.matches;
+      var totalNewMatch = 0;
       for (var i = matches.length - 1; i > 0; --i) {
          var match = matches[i];
          var id = match['_id'];
          if (match.messages.length === 0) {
+            totalNewMatch++;
             var msg = messageGenerator.getResponse();
             client.sendMessage(id, msg, function() {
                console.log('initial message sent', msg);
@@ -24,9 +26,7 @@ var messageService = function(cb) {
          }
        }
        if (cb) {
-         setTimeout(function(){
-             cb();
-           }, 10000);
+         setTimeout(cb, 2000 * totalNewMatch);
        }
     });
 };
