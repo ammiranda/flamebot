@@ -27,7 +27,7 @@ Once the system dependencies are installed go into the root of the project and r
 ```bash
 npm install
 ```
-You wil also need to setup your Facebook login information as environmental variables in your .bashrc file which is described in the [tinderauth](https://github.com/tinderjs/tinderauth) README.
+You will also need to setup your Facebook login information as environmental variables in your .bashrc file which is described in the [tinderauth](https://github.com/tinderjs/tinderauth) README.
 
 In order to run the messaging service successfully you will need to create a messages.json file in the root of the project which you can put in an array of messages which the bot will randomly select one to send to a new match. An example json file can be seen below:
 
