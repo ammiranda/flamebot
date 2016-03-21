@@ -3,6 +3,7 @@ var auth = require('tinderauth');
 var client = new tinder.TinderClient();
 var _ = require('underscore');
 var messageGenerator = require('./randmessageGenerator');
+var randIntGenerator = require('./randRange').randIntInRange;
 var args = process.argv.slice(2);
 
 var exit = function() {
@@ -28,33 +29,46 @@ var messageService = function(cb) {
     });
 };
 
+var likingService = function(){
+   var defaults = client.getDefaults();
+   var recs_size = defaults.globals.recs_size; 
+   client.getRecommendations(recs_size, function(err, data) {
+      console.log(data);
+      _.chain(data.results)
+         .pluck('_id')
+         .each(function(id) {
+            client.like(id, function(err, data) {
+               if (!err) {
+                  console.log('user liked');
+               }
+            });
+         });
+    });
+};
+
 auth.default().then(function(res){
    var token = res.token;
    var profile_id = res.profile_id;
    client.authorize(token, profile_id, function() {
-      console.log('authorized!');
-      var defaults = client.getDefaults();
-      var recs_size = defaults.globals.recs_size;      
+      console.log('authorized!');     
       
       if (!args[0]){
-
-      setInterval(messageService, 120000);      
-      
-      setInterval(function() {
-         client.getRecommendations(recs_size, function(err, data) {
-            console.log(data);
-            _.chain(data.results)
-               .pluck('_id')
-               .each(function(id) {
-                  client.like(id, function(err, data) {
-                     if (!err) {
-                        console.log('user liked');
-                     }
-                  });
-                });
-            });
-      }, 5000);
-
+         (function msgLoop() {
+            var messageInterval = randIntGenerator(120000, 480000);
+            console.log('messageInterval', messageInterval);
+            setTimeout(function(){
+               messageService();
+               msgLoop();
+            }, messageInterval);
+         }());
+         (function likeLoop() {
+            var likeInterval = randIntGenerator(5000, 20000);
+            console.log('likeInterval', likeInterval);
+            setTimeout(function() {
+               likingService();
+               likeLoop();
+            }, likeInterval);
+         }());
       } else if (args[0] === 'msg') {
          messageService(exit);
       }
