@@ -55,7 +55,6 @@ auth.default().then(function(res){
       if (!args[0]){
          (function msgLoop() {
             var messageInterval = randIntGenerator(120000, 480000);
-            console.log('messageInterval', messageInterval);
             setTimeout(function(){
                messageService();
                msgLoop();
@@ -63,7 +62,6 @@ auth.default().then(function(res){
          }());
          (function likeLoop() {
             var likeInterval = randIntGenerator(5000, 20000);
-            console.log('likeInterval', likeInterval);
             setTimeout(function() {
                likingService();
                likeLoop();
