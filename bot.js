@@ -13,22 +13,21 @@ var exit = function() {
 var messageService = function(cb) {
    client.getHistory(function(err, data){
       var matches = data.matches;
-      var totalNewMatch = 0;
-      for (var i = matches.length - 1; i > 0; --i) {
-         var match = matches[i];
-         var id = match['_id'];
-         if (match.messages.length === 0) {
-            totalNewMatch++;
-            var msg = messageGenerator.getResponse();
+      var msg = messageGenerator.getResponse();
+      _.chain(matches)
+         .filter(function(match) {
+            return match.messages.length === 0;
+         })
+         .pluck('_id')
+         .each(function(id) {
             client.sendMessage(id, msg, function() {
                console.log('initial message sent', msg);
             });
-         }
-       }
-       if (cb) {
-         setTimeout(cb, 2000 * totalNewMatch);
-       }
+         });
     });
+    if (cb) {
+       cb();
+    }
 };
 
 var likingService = function(){
@@ -56,7 +55,7 @@ auth.default().then(function(res){
       
       if (!args[0]){
          (function msgLoop() {
-            var messageInterval = randIntGenerator(120000, 480000);
+            var messageInterval = randIntGenerator(60000, 120000);
             setTimeout(function(){
                messageService();
                msgLoop();
