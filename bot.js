@@ -24,10 +24,10 @@ var messageService = function(cb) {
                console.log('initial message sent', msg);
             });
          });
+       if (cb) {
+          cb();
+       }
     });
-    if (cb) {
-       cb();
-    }
 };
 
 var likingService = function(){
@@ -35,6 +35,9 @@ var likingService = function(){
    var recs_size = defaults.globals.recs_size; 
    client.getRecommendations(recs_size, function(err, data) {
       console.log(data);
+      if (data.message && data.message.indexOf('timeout') > -1) {
+         exit();
+      }
       _.chain(data.results)
          .pluck('_id')
          .each(function(id) {
