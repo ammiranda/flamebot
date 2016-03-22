@@ -6,4 +6,4 @@ module.exports = {
    randNumInRange: function(min, max) {
       return Math.random() * (max - min) + min;
    }
-}
+};
