@@ -34,7 +34,6 @@ var likingService = function(){
    var defaults = client.getDefaults();
    var recs_size = defaults.globals.recs_size; 
    client.getRecommendations(recs_size, function(err, data) {
-      console.log(data);
       if (data.message && data.message.indexOf('timeout') > -1) {
          exit();
       }
@@ -43,7 +42,7 @@ var likingService = function(){
          .each(function(id) {
             client.like(id, function(err, data) {
                if (!err) {
-                  console.log('user liked');
+                  console.log('user liked', data);
                }
             });
          });
