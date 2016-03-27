@@ -2,15 +2,26 @@ var tinder = require('tinderjs');
 var auth = require('tinderauth');
 var client = new tinder.TinderClient();
 var _ = require('underscore');
-var messageGenerator = require('./randmessageGenerator');
-var randIntGenerator = require('./randRange').randIntInRange;
+var messageGenerator = require(__dirname + '/randmessageGenerator');
+var randIntGenerator = require(__dirname + '/randRange').randIntInRange;
 var args = process.argv.slice(2);
+var winston = require('winston');
+var logger = new (winston.Logger)({
+   transports: [
+      new (winston.transports.File)({ filename: __dirname + '/runtimes.log' })
+   ]
+});
+
+var date = new Date();
+
+logger.log('info', 'runtime: ' + date + ' pid: ' + process.pid);
 
 var exit = function() {
    process.exit();
 };
 
 var messageService = function(cb) {
+   var totalMatches = 0;
    client.getHistory(function(err, data){
       var matches = data.matches;
       var msg = messageGenerator.getResponse();
@@ -20,12 +31,13 @@ var messageService = function(cb) {
          })
          .pluck('_id')
          .each(function(id) {
+            totalMatches++;
             client.sendMessage(id, msg, function() {
                console.log('initial message sent', msg);
             });
          });
        if (cb) {
-          cb();
+          setTimeout(cb, 5000 * totalMatches);
        }
     });
 };
@@ -52,7 +64,10 @@ var likingService = function(){
 auth.default().then(function(res){
    var token = res.token;
    var profile_id = res.profile_id;
-   client.authorize(token, profile_id, function() {
+   client.authorize(token, profile_id, function(err, data) {
+      if (err) {
+         console.log(err);
+      }
       console.log('authorized!');     
       
       if (!args[0]){

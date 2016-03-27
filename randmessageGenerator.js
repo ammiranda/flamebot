@@ -1,4 +1,4 @@
-var messages = require('./messages.json').textChoices;
+var messages = require('/home/alex/tinderbot/messages.json').textChoices;
 var choiceLength = messages.length;
 
 module.exports = {
