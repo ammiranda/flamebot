@@ -2,6 +2,7 @@ var tinder = require('tinderjs');
 var auth = require('tinderauth');
 var client = new tinder.TinderClient();
 var _ = require('underscore');
+var fs = require('fs');
 var messageGenerator = require(__dirname + '/randmessageGenerator');
 var randIntGenerator = require(__dirname + '/randRange').randIntInRange;
 var args = process.argv.slice(2);
@@ -12,9 +13,7 @@ var logger = new (winston.Logger)({
    ]
 });
 
-var date = new Date();
-
-logger.log('info', 'runtime: ' + date + ' pid: ' + process.pid);
+logger.log('info', 'pid: ' + process.pid);
 
 var exit = function() {
    process.exit();
@@ -23,6 +22,8 @@ var exit = function() {
 var messageService = function(cb) {
    var totalMatches = 0;
    client.getHistory(function(err, data){
+      var hist = JSON.stringify(data, null, '\t');
+      fs.writeFile(__dirname + '/userData.json', hist, 'utf8', function(err, data) { if (err) console.log(err); }); 
       var matches = data.matches;
       var msg = messageGenerator.getResponse();
       _.chain(matches)
@@ -37,7 +38,7 @@ var messageService = function(cb) {
             });
          });
        if (cb) {
-          setTimeout(cb, 5000 * totalMatches);
+  //        setTimeout(cb, 5000 * totalMatches);
        }
     });
 };
